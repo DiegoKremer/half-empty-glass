@@ -1,6 +1,6 @@
 {
   "projects": {
-    "staging": "friendlychat-59577",
-    "default": "onechat-7b1da"
+    "default": "onechat-7b1da",
+    "staging": "onechat-7b1da"
   }
 }

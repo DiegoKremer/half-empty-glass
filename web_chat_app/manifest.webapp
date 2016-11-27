@@ -1,22 +1,22 @@
 {
-  "version": "1.0.0",
-  "name": "Friendly Chat",
+  "version": "0.5",
+  "name": "OneChat",
   "launch_path": "/index.html",
-  "description": "Chat with friends using Firebase 2.0",
+  "description": "Chat using Firebase based web app",
   "developer": {
-    "name": "Google inc.",
+    "name": "Diego Kremer",
     "url": "https://firebase.google.com"
   },
   "installs_allowed_from": [
     "*"
   ],
-  "default_locale": "en",
+  "default_locale": "pt",
   "permissions": {
   },
   "locales": {
-    "en": {
-      "name": "Friendly Chat",
-      "description": "Chat with friends using Firebase 2.0"
+    "pt": {
+      "name": "OneChat",
+      "description": "Converse com amigos usando Firebase Web App"
     }
   }
 }

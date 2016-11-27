@@ -6,6 +6,11 @@
     "rules": "storage.rules"
   },
   "hosting": {
-    "public": "web_chat_app"
-  }
+    "public": "./",
+    "ignore": [
+      "firebase.json",
+      "database-rules.json",
+      "storage.rules"
+    ]
+}
 }
