@@ -66,9 +66,9 @@ OneChat.prototype.initFirebase = function() {
 // Loads chat messages history and listens for upcoming ones.
 OneChat.prototype.loadMessages = function() {
   // TODO(DEVELOPER): Load and listens for new messages.
-  // Reference to the /messages/ database path.
+  // Referência para o caminho /messages/ no banco de dados.
   this.messagesRef = this.database.ref('messages');
-  // Make sure we remove all previous listeners.
+  // Remover todos os listener anteriores.
   this.messagesRef.off();
 
   // Carrega as últimas 100 mensagens e aguarda por novas.
@@ -88,7 +88,7 @@ OneChat.prototype.saveMessage = function(e) {
 
     // TODO(DEVELOPER): push new message to Firebase.
     var currentUser = this.auth.currentUser;
-    // Add a new message entry to the Firebase Database.
+    // Adiciona uma nova mensagem no banco de dados do Firebase.
     this.messagesRef.push({
       name: currentUser.displayName,
       text: this.messageInput.value,
@@ -149,20 +149,23 @@ OneChat.prototype.saveImageMessage = function(event) {
   }
 };
 
-// Signs-in OneChat.
+/* // Signs-in OneChat.
 OneChat.prototype.signIn = function() {
   // TODO(DEVELOPER): Sign in Firebase with credential from the Google user.
   // Sign in Firebase using popup auth and Google as the identity provider.
   var provider = new firebase.auth.GoogleAuthProvider();
   this.auth.signInWithPopup(provider);
 };
+*/
 
-/* //Login com Facebook
+//Login com Facebook
 OneChat.prototype.signIn = function() {
   var provider = new firebase.auth.FacebookAuthProvider();
   this.auth.signInWithPopup(provider);
+  var token = result.credential.accessToken;
+
 };
-*/
+
 
 // Signs-out of OneChat.
 OneChat.prototype.signOut = function() {
@@ -174,9 +177,9 @@ OneChat.prototype.signOut = function() {
 // Triggers when the auth state change for instance when the user signs-in or signs-out.
 OneChat.prototype.onAuthStateChanged = function(user) {
   if (user) { // User is signed in!
-    // Get profile pic and user's name from the Firebase user object.
-    var profilePicUrl = user.photoURL; // Only change these two lines!
-    var userName = user.displayName;   // Only change these two lines!
+    // Pega a foto e nome do usuário do objeto de usuário do Firebase.
+    var profilePicUrl = user.photoURL; // Carrega na varável  foto do perfil do usuário.
+    var userName = user.displayName;   // Carrega na variável nome de exibição do usuário.
 
     // Set the user's profile pic and name.
     this.userPic.style.backgroundImage = 'url(' + profilePicUrl + ')';
@@ -206,7 +209,7 @@ OneChat.prototype.onAuthStateChanged = function(user) {
 // Returns true if user is signed-in. Otherwise false and displays a message.
 OneChat.prototype.checkSignedInWithMessage = function() {
   /* TODO(DEVELOPER): Check if user is signed-in Firebase. */
-  // Return true if the user is signed in Firebase
+  // Retorna verdadeiro se um usuário está logado no Firebase.
  if (this.auth.currentUser) {
    return true;
  };
@@ -280,6 +283,42 @@ OneChat.prototype.toggleButton = function() {
     this.submitButton.setAttribute('disabled', 'true');
   }
 };
+
+// Código de Cloud Messaging do Chrome
+
+function registerCallback(registrationId) {
+  if (chrome.runtime.lastError) {
+    // When the registration fails, handle the error and retry the
+    // registration later.
+    return;
+  }
+
+  // Send the registration token to your application server.
+  sendRegistrationId(function(succeed) {
+    // Once the registration token is received by your server,
+    // set the flag such that register will not be invoked
+    // next time when the app starts up.
+    if (succeed)
+      chrome.storage.local.set({registered: true});
+  });
+}
+
+function sendRegistrationId(callback) {
+  // Send the registration token to your application server
+  // in a secure way.
+}
+
+chrome.runtime.onStartup.addListener(function() {
+  chrome.storage.local.get("registered", function(result) {
+    // If already registered, bail out.
+    if (result["registered"])
+      return;
+
+    // Up to 100 senders are allowed.
+    var senderIds = ["Your-Sender-ID"];
+    chrome.gcm.register(senderIds, registerCallback);
+  });
+});
 
 // Checks that the Firebase SDK has been correctly setup and configured.
 OneChat.prototype.checkSetup = function() {
