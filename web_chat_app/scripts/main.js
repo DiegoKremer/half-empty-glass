@@ -15,8 +15,8 @@
  */
 'use strict';
 
-// Initializes FriendlyChat.
-function FriendlyChat() {
+// Initializes OneChat.
+function OneChat() {
   this.checkSetup();
 
   // Shortcuts to DOM Elements.
@@ -53,7 +53,7 @@ function FriendlyChat() {
 }
 
 // Sets up shortcuts to Firebase features and initiate firebase auth.
-FriendlyChat.prototype.initFirebase = function() {
+OneChat.prototype.initFirebase = function() {
   // TODO(DEVELOPER): Initialize Firebase.
   // Inicialização do SDK do Firebase.
   this.auth = firebase.auth();
@@ -64,7 +64,7 @@ FriendlyChat.prototype.initFirebase = function() {
 };
 
 // Loads chat messages history and listens for upcoming ones.
-FriendlyChat.prototype.loadMessages = function() {
+OneChat.prototype.loadMessages = function() {
   // TODO(DEVELOPER): Load and listens for new messages.
   // Reference to the /messages/ database path.
   this.messagesRef = this.database.ref('messages');
@@ -81,7 +81,7 @@ FriendlyChat.prototype.loadMessages = function() {
 };
 
 // Saves a new message on the Firebase DB.
-FriendlyChat.prototype.saveMessage = function(e) {
+OneChat.prototype.saveMessage = function(e) {
   e.preventDefault();
   // Check that the user entered a message and is signed in.
   if (this.messageInput.value && this.checkSignedInWithMessage()) {
@@ -95,7 +95,7 @@ FriendlyChat.prototype.saveMessage = function(e) {
       photoUrl: currentUser.photoURL || '/images/profile_placeholder.png'
     }).then(function() {
       // Clear message text field and SEND button state.
-      FriendlyChat.resetMaterialTextfield(this.messageInput);
+      OneChat.resetMaterialTextfield(this.messageInput);
       this.toggleButton();
     }.bind(this)).catch(function(error) {
       console.error('Error writing new message to Firebase Database', error);
@@ -104,10 +104,10 @@ FriendlyChat.prototype.saveMessage = function(e) {
 };
 
 // Sets the URL of the given img element with the URL of the image stored in Firebase Storage.
-FriendlyChat.prototype.setImageUrl = function(imageUri, imgElement) {
+OneChat.prototype.setImageUrl = function(imageUri, imgElement) {
   // If the image is a Firebase Storage URI we fetch the URL.
   if (imageUri.startsWith('gs://')) {
-    imgElement.src = FriendlyChat.LOADING_IMAGE_URL; // Display a loading image first.
+    imgElement.src = OneChat.LOADING_IMAGE_URL; // Display a loading image first.
     this.storage.refFromURL(imageUri).getMetadata().then(function(metadata) {
       imgElement.src = metadata.downloadURLs[0];
     });
@@ -118,7 +118,7 @@ FriendlyChat.prototype.setImageUrl = function(imageUri, imgElement) {
 
 // Saves a new message containing an image URI in Firebase.
 // This first saves the image in Firebase storage.
-FriendlyChat.prototype.saveImageMessage = function(event) {
+OneChat.prototype.saveImageMessage = function(event) {
   var file = event.target.files[0];
 
   // Clear the selection in the file picker input.
@@ -131,7 +131,7 @@ FriendlyChat.prototype.saveImageMessage = function(event) {
     var currentUser = this.auth.currentUser;
     this.messagesRef.push({
       name: currentUser.displayName,
-      imageUrl: FriendlyChat.LOADING_IMAGE_URL,
+      imageUrl: OneChat.LOADING_IMAGE_URL,
       photoUrl: currentUser.photoURL || '/images/profile_placeholder.png'
     }).then(function(data) {
 
@@ -149,23 +149,30 @@ FriendlyChat.prototype.saveImageMessage = function(event) {
   }
 };
 
-// Signs-in Friendly Chat.
-FriendlyChat.prototype.signIn = function() {
+// Signs-in OneChat.
+OneChat.prototype.signIn = function() {
   // TODO(DEVELOPER): Sign in Firebase with credential from the Google user.
   // Sign in Firebase using popup auth and Google as the identity provider.
   var provider = new firebase.auth.GoogleAuthProvider();
   this.auth.signInWithPopup(provider);
 };
 
-// Signs-out of Friendly Chat.
-FriendlyChat.prototype.signOut = function() {
+/* //Login com Facebook
+OneChat.prototype.signIn = function() {
+  var provider = new firebase.auth.FacebookAuthProvider();
+  this.auth.signInWithPopup(provider);
+};
+*/
+
+// Signs-out of OneChat.
+OneChat.prototype.signOut = function() {
   // TODO(DEVELOPER): Sign out of Firebase.
   // Sign out of Firebase.
   this.auth.signOut();
 };
 
 // Triggers when the auth state change for instance when the user signs-in or signs-out.
-FriendlyChat.prototype.onAuthStateChanged = function(user) {
+OneChat.prototype.onAuthStateChanged = function(user) {
   if (user) { // User is signed in!
     // Get profile pic and user's name from the Firebase user object.
     var profilePicUrl = user.photoURL; // Only change these two lines!
@@ -197,7 +204,7 @@ FriendlyChat.prototype.onAuthStateChanged = function(user) {
 };
 
 // Returns true if user is signed-in. Otherwise false and displays a message.
-FriendlyChat.prototype.checkSignedInWithMessage = function() {
+OneChat.prototype.checkSignedInWithMessage = function() {
   /* TODO(DEVELOPER): Check if user is signed-in Firebase. */
   // Return true if the user is signed in Firebase
  if (this.auth.currentUser) {
@@ -213,13 +220,13 @@ FriendlyChat.prototype.checkSignedInWithMessage = function() {
 };
 
 // Resets the given MaterialTextField.
-FriendlyChat.resetMaterialTextfield = function(element) {
+OneChat.resetMaterialTextfield = function(element) {
   element.value = '';
   element.parentNode.MaterialTextfield.boundUpdateClassesHandler();
 };
 
 // Template for messages.
-FriendlyChat.MESSAGE_TEMPLATE =
+OneChat.MESSAGE_TEMPLATE =
     '<div class="message-container">' +
       '<div class="spacing"><div class="pic"></div></div>' +
       '<div class="message"></div>' +
@@ -227,15 +234,15 @@ FriendlyChat.MESSAGE_TEMPLATE =
     '</div>';
 
 // A loading image URL.
-FriendlyChat.LOADING_IMAGE_URL = 'https://www.google.com/images/spin-32.gif';
+OneChat.LOADING_IMAGE_URL = 'https://www.google.com/images/spin-32.gif';
 
 // Displays a Message in the UI.
-FriendlyChat.prototype.displayMessage = function(key, name, text, picUrl, imageUri) {
+OneChat.prototype.displayMessage = function(key, name, text, picUrl, imageUri) {
   var div = document.getElementById(key);
   // If an element for that message does not exists yet we create it.
   if (!div) {
     var container = document.createElement('div');
-    container.innerHTML = FriendlyChat.MESSAGE_TEMPLATE;
+    container.innerHTML = OneChat.MESSAGE_TEMPLATE;
     div = container.firstChild;
     div.setAttribute('id', key);
     this.messageList.appendChild(div);
@@ -266,7 +273,7 @@ FriendlyChat.prototype.displayMessage = function(key, name, text, picUrl, imageU
 
 // Enables or disables the submit button depending on the values of the input
 // fields.
-FriendlyChat.prototype.toggleButton = function() {
+OneChat.prototype.toggleButton = function() {
   if (this.messageInput.value) {
     this.submitButton.removeAttribute('disabled');
   } else {
@@ -275,20 +282,14 @@ FriendlyChat.prototype.toggleButton = function() {
 };
 
 // Checks that the Firebase SDK has been correctly setup and configured.
-FriendlyChat.prototype.checkSetup = function() {
+OneChat.prototype.checkSetup = function() {
   if (!window.firebase || !(firebase.app instanceof Function) || !window.config) {
-    window.alert('You have not configured and imported the Firebase SDK. ' +
-        'Make sure you go through the codelab setup instructions.');
+    window.alert('Você não configurou e importou a SDK do Firebase.');
   } else if (config.storageBucket === '') {
-    window.alert('Your Firebase Storage bucket has not been enabled. Sorry about that. This is ' +
-        'actually a Firebase bug that occurs rarely. ' +
-        'Please go and re-generate the Firebase initialisation snippet (step 4 of the codelab) ' +
-        'and make sure the storageBucket attribute is not empty. ' +
-        'You may also need to visit the Storage tab and paste the name of your bucket which is ' +
-        'displayed there.');
+    window.alert('O seu Firebase Storage Bucket não foi habilitado. Este é um bug que acontece raramente. É necessário gerar novamente o Firebase Initialisation Snippet');
   }
 };
 
 window.onload = function() {
-  window.friendlyChat = new FriendlyChat();
+  window.OneChat = new OneChat();
 };
