@@ -55,11 +55,11 @@ function FriendlyChat() {
 // Sets up shortcuts to Firebase features and initiate firebase auth.
 FriendlyChat.prototype.initFirebase = function() {
   // TODO(DEVELOPER): Initialize Firebase.
-  // Shortcuts to Firebase SDK features.
+  // Inicialização do SDK do Firebase.
   this.auth = firebase.auth();
   this.database = firebase.database();
   this.storage = firebase.storage();
-  // Initiates Firebase auth and listen to auth state changes.
+  // Inicializa a autenticação do Firebase e fica escutando por mudanças de estado.
   this.auth.onAuthStateChanged(this.onAuthStateChanged.bind(this));
 };
 
@@ -71,13 +71,13 @@ FriendlyChat.prototype.loadMessages = function() {
   // Make sure we remove all previous listeners.
   this.messagesRef.off();
 
-  // Loads the last 12 messages and listen for new ones.
+  // Carrega as últimas 100 mensagens e aguarda por novas.
   var setMessage = function(data) {
     var val = data.val();
     this.displayMessage(data.key, val.name, val.text, val.photoUrl, val.imageUrl);
   }.bind(this);
-  this.messagesRef.limitToLast(12).on('child_added', setMessage);
-  this.messagesRef.limitToLast(12).on('child_changed', setMessage);
+  this.messagesRef.limitToLast(100).on('child_added', setMessage);
+  this.messagesRef.limitToLast(100).on('child_changed', setMessage);
 };
 
 // Saves a new message on the Firebase DB.
