@@ -1,0 +1,7 @@
+language: html
+script:
+  - echo "Deploying..."
+install:
+  - npm install -g firebase-tools
+after_success:
+  - firebase deploy --token 1/hDTIkS93jGH7JQUIRiLsNJQUhzkCG4fwqk6TnqrbGIKjPalWY-_DHTcHniaYE-fa
